@@ -179,9 +179,7 @@ body {
     justify-content: center;
     align-items: center;
     flex-direction: column;
-
     margin: 5rem 1rem 2rem;
-
     display: none;
 }
 
@@ -201,4 +199,89 @@ body {
     font-size: 18px;
     color: rgb(173, 173, 173);
     margin-bottom: 3rem;
+}
+
+@media (min-width: 575px) {
+    .card-back {
+        right: 30%;
+    }
+
+    .card-front {
+        left: 30%;
+    }
+}
+
+@media (min-width: 1000px) {
+    .img-container {
+        background: url("./images/bg-main-desktop.png");
+        background-repeat: repeat-y;
+        height: 900px;
+        width: 60%;
+        display: inline-block;
+    }
+
+    .card-back {
+        top: 50%;
+        left: 15%;
+        right:auto;
+    }
+
+    .card-cvc {
+        font-size: 16px;
+        right: 3rem;
+        top: 6.8rem;
+    }
+
+    .card-front {
+        top: 20%;
+        left: 10%;
+    }
+
+    .card-number {
+        font-size: 30px;
+        left: 2rem;
+        top: 7rem;
+    }
+
+    .card-name {
+        font-size: 16px;
+        left: 2rem;
+        top: 11.5rem;
+    }
+    .card-date {
+        font-size: 16px;
+        right: 2rem;
+        top: 11.5rem;
+    }
+
+    .card-logo {
+        transform: scale(100%);
+        left: 2rem;
+        top: 2rem;
+    }
+    
+
+    .card-front img, .card-back img{
+        width: auto;
+    }
+
+    .form {
+        width: 30%;
+        display: inline-block;
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    .complete {
+        width: 40%;
+        display: inline-block;
+        margin: 0;
+        position: absolute;
+        top: 50%;
+        left: 90%;
+        transform: translate(-90%, -50%);
+        display: none;
+    } 
 }

@@ -19,6 +19,31 @@ let form = document.querySelector('[data-js="form"]')
 let divComplete= document.querySelector('[data-js="div-complete"]')
 let btnConfirm = document.querySelector('[data-js="btn-confirm"]')
 
+// INPUTS MASKS
+let cardCVCMask= new IMask($inputCardCVC, {
+    mask: '000'
+})
+
+let monthMask = new IMask($inputCardMonth, {
+    mask: IMask.MaskedRange,
+    from: 01,
+    to: 12
+
+})
+
+let yearMask = new IMask($inputCardYear, {
+    mask: '00'
+})
+
+let cardNumberMask = new IMask($inputCardNumber, {
+    mask: '**** **** **** ****'
+})
+
+let cardNameMask = new IMask($inputCardName, {
+    mask: /^\D+$/
+})
+
+//ADD EVENTS
 $inputs.forEach(input => {
     input.addEventListener('keyup', updateCardDetails)
 })
@@ -28,6 +53,10 @@ $inputs.forEach(input => {
 })
 
 btnConfirm.addEventListener('click', handleSubmit)
+
+btnConfirm.addEventListener('click', checkFillInputs)
+
+
 
 function updateCardDetails() {
     const inputType = this.dataset.js
@@ -51,25 +80,25 @@ function updateCardDetails() {
 }
 
 function handleSubmit() {
-    checkFillInputs()
     let hasEmptyInputs = checkEmptyInputs()
-    let hasInvalidCardNumber = checkCardNumberInput($inputCardNumber)
+    let hasValidCardNumber = checkCardNumberInput($inputCardNumber)
+    let hasValidMonth = checkMonthInput($inputCardMonth)
+    let hasValidYear = checkYearInput($inputCardYear)
+    let hasValidCVC = checkCVCInput($inputCardCVC)
 
-    if(!hasEmptyInputs && !hasInvalidCardNumber) {
+    if(!hasEmptyInputs && hasValidCardNumber && hasValidMonth && hasValidYear) {
         form.style.display = 'none'
         divComplete.style.display = 'flex'
         console.log('tese')
     }
-
 }
+
 
 function checkFillInputs() {
     let fillInputs = $inputs.filter(input => input.value !== ""
     )
     if(fillInputs.length > 0) addOrRemoveEmptyErrorMessage(fillInputs, 'remove')
 }
-
-
 
 function checkEmptyInputs() {
     let emptyInputs = $inputs.filter(input => input.value === ""
@@ -86,7 +115,6 @@ function checkIfInputHasErrorClass(inputs) {
     })
 }
 
-
 function showErrorEmptyInputs(inputs) {
     let inputsWithoutError = checkIfInputHasErrorClass(inputs)
 
@@ -95,7 +123,6 @@ function showErrorEmptyInputs(inputs) {
         addOrRemoveEmptyErrorMessage(inputsWithoutError, 'add')
     } 
 }
-
 
 function addOrRemoveEmptyErrorMessage(inputs, action) {
     let newDisplay = action === 'add' ? 'block' : 'none'
@@ -126,7 +153,6 @@ function inputsWithoutMonthInput(inputs) {
     return inputs
 }
 
-
 function addClassInputError(inputs) {
     inputs.forEach(input => input.classList.add('input-error'))
 }
@@ -135,23 +161,24 @@ function removeClassInputError() {
     this.classList.remove('input-error')
 }
 
-
-// CHECK CARD NUMBER INPUT
+// CHECK FIELDS INPUT
 
 function checkCardNumberInput(cardNumber) {
     hideErrorInvalidCardNumber()
 
-    let invalidCardNumber = hasInvalidCardNumber(cardNumber)
-    if(cardNumber.value !== "" && invalidCardNumber) {
+    let isValidCardNumber = hasValidCardNumber(cardNumber)
+    if(cardNumber.value !== "" && !isValidCardNumber) {
         showErrorInvalidCardNumber()
         addClassInputError([cardNumber])
-    } 
+    }else if(cardNumber.value!== "" && isValidCardNumber) {
+        hideErrorInvalidCardNumber()
+    }
 
-    return invalidCardNumber
+    return isValidCardNumber
 }
 
-function hasInvalidCardNumber(cardNumber) {
-    let regex = new RegExp('[^\\d\\s]', 'gi')
+function hasValidCardNumber(cardNumber) {
+    let regex = new RegExp('\\d{4}\\s\\d{4}\\s\\d{4}\\s\\d{4}', 'gi')
 
     return regex.test(cardNumber.value)
 }
@@ -162,5 +189,32 @@ function showErrorInvalidCardNumber() {
 
 function hideErrorInvalidCardNumber() {
     msgErrorInvalidCardNumber.style.display = 'none'
+}
+
+function checkMonthInput(month) {
+    let regex = new RegExp('\\d{2}')
+    if(!regex.test(month.value)) {
+        addClassInputError([month])
+    }
+
+    return regex.test(month.value)
+}
+
+function checkYearInput(year) {
+    let regex = new RegExp('\\d{2}')
+
+    if(!regex.test(year.value)) {
+        addClassInputError([year])
+    }
+    return regex.test(year.value)
+}
+
+function checkCVCInput(cvc) {
+    let regex = new RegExp('\\d{3}')
+
+    if(!regex.test(cvc.value)) {
+        addClassInputError([cvc])
+    }
+    return regex.test(cvc.value)
 }
 
